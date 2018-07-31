@@ -7,7 +7,7 @@
 		var a = factory();
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -2640,17 +2640,24 @@ function setup(fsm, states, controls, state, control) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 exports.default = setup;
 /**
  * Setup relationship between VueRouter and StateHelper
  *
  * @param   {VueRouter}     router      The VueRouter instance
  * @param   {StateObject}   object      The StateObject instance
+ * @param   {Object}        object      Setup parameters
  */
-function setup(router, object) {
+function setup(router, object, params) {
     function updateRoute() {
-        router.push({ name: object.fsm.state });
+        return router[params.method]({ name: object.fsm.state });
     }
+
+    params = params || {};
+    params.method = _typeof(router[params.method] === 'function') ? params.method : 'push';
 
     // set the current route as current state
     object.fsm.state = router.currentRoute.name;
@@ -2669,8 +2676,10 @@ function setup(router, object) {
         object.update();
     });
 
-    // immediately update route
-    updateRoute();
+    if (params.autoUpdateRoute) {
+        // immediately update route
+        updateRoute();
+    }
 }
 
 /***/ })
