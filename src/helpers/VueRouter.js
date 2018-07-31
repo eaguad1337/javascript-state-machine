@@ -33,6 +33,8 @@ export default function setup (router, object, params)
         object.update();
     });
 
-    // immediately update route
-    updateRoute();
+    if (params.autoUpdateRoute) {
+        // immediately update route
+        updateRoute();
+    }
 }
